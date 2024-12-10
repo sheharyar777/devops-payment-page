@@ -1,0 +1,72 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #ffccd5; /* Pink background */
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.container {
+    text-align: center;
+    width: 400px;
+    background-color: #ffe5e9; /* Light pink */
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border: 1px solid #ff7a91;
+}
+
+header h1 {
+    margin-bottom: 20px;
+    font-size: 1.5rem;
+    color: #444;
+}
+
+.payment-form h2 {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.payment-form label {
+    font-weight: bold;
+    font-size: 0.9rem;
+    margin: 5px 0;
+    display: block;
+    text-align: left;
+}
+
+.payment-form input {
+    width: 100%;
+    padding: 8px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.expiry-cvv {
+    display: flex;
+    gap: 10px;
+}
+
+.expiry-cvv div {
+    flex: 1;
+}
+
+button {
+    background-color: #ff7a91;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 100%;
+    font-size: 1rem;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #ff506b;
+}

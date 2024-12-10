@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Page</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Evolving Ltd</h1>
+        </header>
+        <main>
+            <section class="payment-form">
+                <h2>Payment Method Details</h2>
+                <form>
+                    <label for="card-number">Card Number</label>
+                    <input type="text" id="card-number" placeholder="Enter card number">
+
+                    <div class="expiry-cvv">
+                        <div>
+                            <label for="expiry-date">Expiry Date</label>
+                            <input type="text" id="expiry-date" placeholder="MM/YY">
+                        </div>
+                        <div>
+                            <label for="cvv">CVV</label>
+                            <input type="password" id="cvv" placeholder="CVV">
+                        </div>
+                    </div>
+
+                    <label for="amount">Amount</label>
+                    <input type="text" id="amount" placeholder="Enter amount">
+
+                    <button type="button">Continue</button>
+                </form>
+            </section>
+        </main>
+    </div>
+</body>
+</html>
