@@ -1,10 +1,14 @@
-# Use the latest NGINX image as the base
-FROM nginx:latest
+# Use the official Nginx image from the Docker Hub
+FROM nginx:alpine
 
-# Copy the HTML and CSS files into the appropriate directory in the container
-COPY index.html /usr/share/nginx/html
-COPY style.css /usr/share/nginx/html
+# Copy the webpage files into the Nginx container
+COPY index.html /usr/share/nginx/html/index.html
+COPY style.css /usr/share/nginx/html/style.css
 
-# Expose port 80
+# Expose the port the app will run on
 EXPOSE 80
+
+# Start Nginx to serve the app
+CMD ["nginx", "-g", "daemon off;"]
+
 
