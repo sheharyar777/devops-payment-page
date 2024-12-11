@@ -16,9 +16,14 @@ pipeline {
         stage('Run Docker Container') {
             steps {
                 script {
-                    sh 'docker run -d -p 80:80 devops-webpage'
+                    // Stop and remove the old container if it exists
+                    sh '''
+                    docker ps -q -f "ancestor=devops-webpage" | xargs --no-run-if-empty docker rm -f
+                    docker run -d -p 80:80 devops-webpage
+                    '''
                 }
             }
         }
     }
 }
+
