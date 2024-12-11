@@ -1,0 +1,7 @@
+---
+- name: Test communication with the webserver
+  hosts: localhost
+  connection: local
+  tasks:
+    - name: Echo a message
+      command: /bin/echo "hello world"

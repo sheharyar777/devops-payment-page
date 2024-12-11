@@ -1,0 +1,22 @@
+---
+- name: Install Apache webserver
+  hosts: localhost
+  connection: local
+  become: yes
+
+  tasks:
+    - name: Update package repository
+      yum:
+        name: "*"
+        state: latest
+
+    - name: Install Apache
+      yum:
+        name: httpd
+        state: present
+
+    - name: Start and enable Apache service
+      service:
+        name: httpd
+        state: started
+        enabled: yes
