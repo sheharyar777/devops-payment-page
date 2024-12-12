@@ -1,16 +1,10 @@
 pipeline {
     agent any
-
     stages {
-        stage('Clone Repository') {
-            steps {
-                checkout scm
-            }
-        }
-
         stage('Build Docker Image') {
             steps {
                 script {
+                    // Build the Docker image
                     sh 'docker build -t devops-webpage .'
                 }
             }
@@ -19,16 +13,21 @@ pipeline {
         stage('Run Docker Container') {
             steps {
                 script {
-                    // Stop and remove the old container if it's running ok
-                    sh '''
-                    if [ $(docker ps -q -f name=devops-webpage-container) ]; then
-                        echo "Stopping and removing old container..."
-                        docker stop devops-webpage-container
-                        docker rm devops-webpage-container
-                    fi
-                    # Run the new container with a unique name
-                    docker run -d -p 80:80 --name devops-webpage-container-$(date +%s) devops-webpage
-                    '''
+                    // Check if the container is already running
+                    def containerId = sh(script: 'docker ps -q -f name=devops-webpage-container', returnStdout: true).trim()
+                    
+                    // If the container is running, stop and remove it
+                    if (containerId) {
+                        echo 'Stopping and removing old container...'
+                        sh "docker stop devops-webpage-container"
+                        sh "docker rm devops-webpage-container"
+                    } else {
+                        echo 'No running container found with the name devops-webpage-container.'
+                    }
+
+                    // Run the new container
+                    echo 'Starting new container...'
+                    sh 'docker run -d --name devops-webpage-container -p 8080:80 devops-webpage'
                 }
             }
         }
