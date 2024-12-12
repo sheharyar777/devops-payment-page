@@ -1,11 +1,26 @@
 pipeline {
     agent any
+
+    environment {
+        DOCKER_IMAGE = 'devops-webpage'
+        CONTAINER_NAME = 'devops-webpage-container'
+        PORT = '8090'
+        UNIQUE_CONTAINER_NAME = "${CONTAINER_NAME}-${BUILD_ID}" // Adding build ID to make the container name unique
+    }
+
     stages {
+        stage('Checkout SCM') {
+            steps {
+                script {
+                    checkout scm
+                }
+            }
+        }
+
         stage('Build Docker Image') {
             steps {
                 script {
-                    // Build the Docker image
-                    sh 'docker build -t devops-webpage .'
+                    sh 'docker build -t ${DOCKER_IMAGE} .'
                 }
             }
         }
@@ -13,23 +28,29 @@ pipeline {
         stage('Run Docker Container') {
             steps {
                 script {
-                    // Get the container ID of any running container with the name prefix devops-webpage-container
-                    def containerId = sh(script: 'docker ps -q -f name=devops-webpage-container', returnStdout: true).trim()
+                    // Stop and remove the old container if it exists
+                    sh '''
+                        if docker ps -q -f name=${UNIQUE_CONTAINER_NAME}; then
+                            echo "Stopping and removing old container..."
+                            docker stop ${UNIQUE_CONTAINER_NAME}
+                            docker rm ${UNIQUE_CONTAINER_NAME}
+                        else
+                            echo "No old container to remove."
+                        fi
+                    '''
                     
-                    // If any container is found, stop and remove it
-                    if (containerId) {
-                        echo 'Stopping and removing old container...'
-                        sh "docker stop ${containerId}"
-                        sh "docker rm ${containerId}"
-                    } else {
-                        echo 'No running container found with the name devops-webpage-container.'
-                    }
-
-                    // Run the new container
-                    echo 'Starting new container...'
-                    sh 'docker run -d --name devops-webpage-container -p 8090:80 devops-webpage'
+                    // Start the new container with a unique name
+                    echo "Starting new container..."
+                    sh "docker run -d --name ${UNIQUE_CONTAINER_NAME} -p ${PORT}:80 ${DOCKER_IMAGE}"
                 }
             }
+        }
+    }
+
+    post {
+        always {
+            echo 'Cleaning up...'
+            // Optionally, you can add cleanup steps here to remove unused images or containers
         }
     }
 }
