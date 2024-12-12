@@ -13,7 +13,7 @@ pipeline {
                 }
             }
         }
-       stage('Run Docker Container') {
+        stage('Run Docker Container') {
             steps {
                 script {
                     // Run the container with a unique name
@@ -23,3 +23,5 @@ pipeline {
                 }
             }
         }
+    }
+}
