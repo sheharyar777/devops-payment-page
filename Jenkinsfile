@@ -19,7 +19,7 @@ pipeline {
         stage('Run Docker Container') {
             steps {
                 script {
-                    // Stop and remove the old container if it's running
+                    // Stop and remove the old container if it's running ok
                     sh '''
                     if [ $(docker ps -q -f name=devops-webpage-container) ]; then
                         echo "Stopping and removing old container..."
