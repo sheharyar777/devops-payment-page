@@ -16,12 +16,12 @@ pipeline {
         stage('Run Docker Container') {
             steps {
                 script {
-                    // Stop and remove any existing containers for the image
                     sh '''
+                    # Stop and remove old containers running the same image
                     docker ps -a -q -f "ancestor=devops-webpage" | xargs -r docker stop
                     docker ps -a -q -f "ancestor=devops-webpage" | xargs -r docker rm
-                    
-                    // Start a new container
+
+                    # Start a new container
                     docker run -d -p 80:80 --name devops-webpage-container devops-webpage
                     '''
                 }
