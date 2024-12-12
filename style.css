@@ -1,73 +1,106 @@
+/* General Body Styling */
 body {
     font-family: Arial, sans-serif;
-<<<<<<< HEAD
-    background-color: #FFFF00; /* Pink background */
+    background-color: #f8f9fa; /* Light grey */
     margin: 0;
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 101vh;
+    height: 100vh;
+}
 
-
+/* Container Styling */
 .container {
     text-align: center;
     width: 400px;
-    background-color: #ffe5e9; /* Light pink */
+    background-color: #ffffff; /* White background */
     border-radius: 8px;
-    padding: 20px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    border: 1px solid #ff7a91;
+    padding: 25px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    border: 1px solid #dee2e6;
 }
 
+/* Header Styling */
 header h1 {
     margin-bottom: 20px;
-    font-size: 1.5rem;
-    color: #444;
+    font-size: 1.8rem;
+    color: #495057;
+    font-weight: bold;
 }
 
+/* Payment Form Section */
 .payment-form h2 {
-    font-size: 1.2rem;
-    margin-bottom: 10px;
-    color: #333;
+    font-size: 1.4rem;
+    margin-bottom: 15px;
+    color: #343a40;
 }
 
 .payment-form label {
     font-weight: bold;
     font-size: 0.9rem;
-    margin: 5px 0;
+    margin: 8px 0;
     display: block;
     text-align: left;
+    color: #495057;
 }
 
 .payment-form input {
     width: 100%;
-    padding: 8px;
+    padding: 10px;
     margin: 10px 0;
-    border: 1px solid #ccc;
+    border: 1px solid #ced4da;
     border-radius: 4px;
+    font-size: 0.9rem;
+    box-sizing: border-box;
 }
 
+.payment-form input:focus {
+    border-color: #80bdff;
+    outline: none;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.25);
+}
+
+/* Expiry and CVV Section */
 .expiry-cvv {
     display: flex;
-    gap: 10px;
+    gap: 15px;
 }
 
 .expiry-cvv div {
     flex: 1;
 }
 
+/* Button Styling */
 button {
-    background-color: #ff7a91;
+    background-color: #007bff;
     color: white;
-    padding: 10px;
+    padding: 12px;
     border: none;
     border-radius: 4px;
     cursor: pointer;
     width: 100%;
     font-size: 1rem;
-    transition: background-color 0.3s;
+    font-weight: bold;
+    transition: background-color 0.3s, transform 0.2s;
 }
 
 button:hover {
-    background-color: #ff506b;
+    background-color: #0056b3;
+    transform: scale(1.02);
+}
+
+button:active {
+    background-color: #003f7f;
+}
+
+/* Responsive Design */
+@media (max-width: 480px) {
+    .container {
+        width: 90%;
+        padding: 20px;
+    }
+
+    header h1 {
+        font-size: 1.5rem;
+    }
 }
