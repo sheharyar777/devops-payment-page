@@ -13,14 +13,14 @@ pipeline {
         stage('Run Docker Container') {
             steps {
                 script {
-                    // Check if the container is already running
+                    // Get the container ID of any running container with the name prefix devops-webpage-container
                     def containerId = sh(script: 'docker ps -q -f name=devops-webpage-container', returnStdout: true).trim()
                     
-                    // If the container is running, stop and remove it
+                    // If any container is found, stop and remove it
                     if (containerId) {
                         echo 'Stopping and removing old container...'
-                        sh "docker stop devops-webpage-container"
-                        sh "docker rm devops-webpage-container"
+                        sh "docker stop ${containerId}"
+                        sh "docker rm ${containerId}"
                     } else {
                         echo 'No running container found with the name devops-webpage-container.'
                     }
