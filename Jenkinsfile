@@ -16,8 +16,14 @@ pipeline {
         stage('Run Docker Container') {
             steps {
                 script {
-                    // Run the container with a unique name
+                    // Stop and remove the old container if it's running
                     sh '''
+                    if [ $(docker ps -q -f name=devops-webpage-container) ]; then
+                        echo "Stopping and removing old container..."
+                        docker stop devops-webpage-container
+                        docker rm devops-webpage-container
+                    fi
+                    // Run the new container with a unique name
                     docker run -d -p 80:80 --name devops-webpage-container-$(date +%s) devops-webpage
                     '''
                 }
