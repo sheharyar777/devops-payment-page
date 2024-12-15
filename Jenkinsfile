@@ -2,58 +2,64 @@ pipeline {
     agent any
 
     environment {
-        // Set the Docker image name
-        IMAGE_NAME = 'devops-payment-page'
+        // Define any environment variables if needed
+        DOCKER_IMAGE = 'devops-payment-page'
     }
 
     stages {
-        // Stage 1: Checkout code from GitHub
-        stage('Checkout') {
+        // Stage for checking out the code from the GitHub repository
+        stage('Checkout SCM') {
             steps {
-                // Checkout the latest code from the GitHub repository
                 git 'https://github.com/sheharyar777/devops-payment-page.git'
             }
         }
 
-        // Stage 2: Build Docker image
+        // Stage for building the Docker image
         stage('Build Docker Image') {
             steps {
                 script {
-                    // Build the Docker image
-                    sh 'docker build -t devops-payment-page '
+                    // Navigate to the directory where Dockerfile is located
+                    dir('devops-payment-page') {
+                        // Build the Docker image
+                        sh 'docker build -t $DOCKER_IMAGE .'
+                    }
                 }
             }
         }
 
-        // Stage 3: Run Docker container
+        // Stage for testing the Docker image (optional, depending on your project needs)
+        stage('Test Docker Image') {
+            steps {
+                script {
+                    // Run some tests on the Docker image (you can replace this with your specific tests)
+                    sh 'docker run --rm $DOCKER_IMAGE test-command'
+                }
+            }
+        }
+
+        // Stage for deploying the Docker image (optional, replace with your deployment steps)
         stage('Deploy') {
             steps {
                 script {
-                    // Run the Docker container and expose it on port 80
-                    sh 'docker run -d -p 80:80 ${IMAGE_NAME}'
-                }
-            }
-        }
-
-        // Stage 4: Clean up (Optional)
-        stage('Clean Up') {
-            steps {
-                script {
-                    // Stop and remove the Docker container after the deployment
-                    sh 'docker stop $(docker ps -q --filter "ancestor=${IMAGE_NAME}") || true'
-                    sh 'docker rm $(docker ps -a -q --filter "ancestor=${IMAGE_NAME}") || true'
+                    // Example deploy step, replace with your actual deployment logic
+                    sh 'docker run -d -p 8080:80 $DOCKER_IMAGE'
                 }
             }
         }
     }
 
     post {
-        // Notify on success or failure
-        success {
-            echo 'Webpage successfully deployed!'
+        // Actions to perform after the pipeline runs, regardless of success or failure
+        always {
+            cleanWs()  // Clean workspace after build
         }
+
+        success {
+            echo 'Build and deployment succeeded!'
+        }
+
         failure {
-            echo 'Deployment failed.'
+            echo 'Build or deployment failed.'
         }
     }
 }
