@@ -2,78 +2,58 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_IMAGE = 'devops-webpage'
-        CONTAINER_NAME = 'devops-webpage-container'
-        PORT = '8090' // Desired port
-        UNIQUE_CONTAINER_NAME = "${CONTAINER_NAME}-${BUILD_ID}" // Unique container name
+        // Set the Docker image name
+        IMAGE_NAME = 'devops-payment-page'
     }
 
     stages {
-        stage('Checkout SCM') {
+        // Stage 1: Checkout code from GitHub
+        stage('Checkout') {
             steps {
-                script {
-                    checkout scm
-                }
+                // Checkout the latest code from the GitHub repository
+                git 'https://github.com/sheharyar777/devops-payment-page.git'
             }
         }
 
+        // Stage 2: Build Docker image
         stage('Build Docker Image') {
             steps {
                 script {
-                    sh 'docker build -t $DOCKER_IMAGE .'
+                    // Build the Docker image
+                    sh 'docker build -t ${IMAGE_NAME} .'
                 }
             }
         }
 
-        stage('Run Docker Container') {
+        // Stage 3: Run Docker container
+        stage('Deploy') {
             steps {
                 script {
-                    // Ensure port availability and clean up old containers
-                    sh '''
-                        echo "Checking if port $PORT is free..."
-                        
-                        # Check if port is in use
-                        if lsof -i:$PORT; then
-                            echo "Port $PORT is in use. Stopping and removing any containers using it..."
-                            CONTAINER_ID=$(docker ps -q --filter "publish=$PORT")
-                            if [ "$CONTAINER_ID" ]; then
-                                docker stop $CONTAINER_ID
-                                docker rm $CONTAINER_ID
-                            fi
-                            
-                            # Forcefully kill any remaining processes using the port
-                            echo "Killing any processes using port $PORT..."
-                            fuser -k $PORT/tcp || true
-                        else
-                            echo "Port $PORT is free."
-                        fi
+                    // Run the Docker container and expose it on port 80
+                    sh 'docker run -d -p 80:80 ${IMAGE_NAME}'
+                }
+            }
+        }
 
-                        echo "Checking for existing container..."
-                        if [ "$(docker ps -aq -f name=$UNIQUE_CONTAINER_NAME)" ]; then
-                            echo "Stopping and removing old container..."
-                            docker stop $UNIQUE_CONTAINER_NAME || echo "Container already stopped."
-                            docker rm $UNIQUE_CONTAINER_NAME || echo "Container already removed."
-                        else
-                            echo "No old container found."
-                        fi
-
-                        echo "Starting new container with unique name..."
-                        docker run -d --name $UNIQUE_CONTAINER_NAME -p $PORT:80 $DOCKER_IMAGE
-                    '''
+        // Stage 4: Clean up (Optional)
+        stage('Clean Up') {
+            steps {
+                script {
+                    // Stop and remove the Docker container after the deployment
+                    sh 'docker stop $(docker ps -q --filter "ancestor=${IMAGE_NAME}") || true'
+                    sh 'docker rm $(docker ps -a -q --filter "ancestor=${IMAGE_NAME}") || true'
                 }
             }
         }
     }
 
     post {
-        always {
-            echo 'Cleaning up...'
-            // Prune unused resources
-            sh '''
-                echo "Pruning unused Docker resources..."
-                docker image prune -f || echo "No unused images to prune."
-                docker container prune -f || echo "No unused containers to prune."
-            '''
+        // Notify on success or failure
+        success {
+            echo 'Webpage successfully deployed!'
+        }
+        failure {
+            echo 'Deployment failed.'
         }
     }
 }
