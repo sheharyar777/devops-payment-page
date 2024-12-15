@@ -31,6 +31,8 @@ pipeline {
                     // Ensure port availability and clean up old containers
                     sh '''
                         echo "Checking if port $PORT is free..."
+                        
+                        # Check if port is in use
                         if lsof -i:$PORT; then
                             echo "Port $PORT is in use. Stopping and removing any containers using it..."
                             CONTAINER_ID=$(docker ps -q --filter "publish=$PORT")
@@ -38,6 +40,10 @@ pipeline {
                                 docker stop $CONTAINER_ID
                                 docker rm $CONTAINER_ID
                             fi
+                            
+                            # Forcefully kill any remaining processes using the port
+                            echo "Killing any processes using port $PORT..."
+                            fuser -k $PORT/tcp || true
                         else
                             echo "Port $PORT is free."
                         fi
