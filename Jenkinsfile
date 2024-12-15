@@ -2,46 +2,30 @@ pipeline {
     agent any
 
     environment {
-        // Define any environment variables if needed
         DOCKER_IMAGE = 'devops-payment-page'
+        GIT_REPO = 'https://github.com/sheharyar777/devops-payment-page.git'
     }
 
     stages {
-        // Stage for checking out the code from the GitHub repository
         stage('Checkout SCM') {
             steps {
-                git 'https://github.com/sheharyar777/devops-payment-page.git'
+                git "${GIT_REPO}"
             }
         }
 
-        // Stage for building the Docker image
         stage('Build Docker Image') {
             steps {
                 script {
-                    // Navigate to the directory where Dockerfile is located
-                    dir('devops-payment-page') {
-                        // Build the Docker image
-                        sh 'docker build -t $DOCKER_IMAGE .'
-                    }
+                    // Build Docker image from the Dockerfile
+                    sh 'docker build -t $DOCKER_IMAGE .'
                 }
             }
         }
 
-        // Stage for testing the Docker image (optional, depending on your project needs)
-        stage('Test Docker Image') {
+        stage('Run Docker Container') {
             steps {
                 script {
-                    // Run some tests on the Docker image (you can replace this with your specific tests)
-                    sh 'docker run --rm $DOCKER_IMAGE test-command'
-                }
-            }
-        }
-
-        // Stage for deploying the Docker image (optional, replace with your deployment steps)
-        stage('Deploy') {
-            steps {
-                script {
-                    // Example deploy step, replace with your actual deployment logic
+                    // Run the Docker container from the built image
                     sh 'docker run -d -p 8080:80 $DOCKER_IMAGE'
                 }
             }
@@ -49,9 +33,8 @@ pipeline {
     }
 
     post {
-        // Actions to perform after the pipeline runs, regardless of success or failure
         always {
-            cleanWs()  // Clean workspace after build
+            echo 'Build or deployment completed.'
         }
 
         success {
