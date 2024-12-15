@@ -4,8 +4,8 @@ pipeline {
     environment {
         DOCKER_IMAGE = 'devops-webpage'
         CONTAINER_NAME = 'devops-webpage-container'
-        PORT = '8090'
-        UNIQUE_CONTAINER_NAME = "${CONTAINER_NAME}-${BUILD_ID}" // Unique container name for each build
+        PORT = '8090' // Desired port
+        UNIQUE_CONTAINER_NAME = "${CONTAINER_NAME}-${BUILD_ID}" // Unique container name
     }
 
     stages {
@@ -28,8 +28,20 @@ pipeline {
         stage('Run Docker Container') {
             steps {
                 script {
-                    // Stop and remove old container if it exists
+                    // Ensure port availability and clean up old containers
                     sh '''
+                        echo "Checking if port $PORT is free..."
+                        if lsof -i:$PORT; then
+                            echo "Port $PORT is in use. Stopping and removing any containers using it..."
+                            CONTAINER_ID=$(docker ps -q --filter "publish=$PORT")
+                            if [ "$CONTAINER_ID" ]; then
+                                docker stop $CONTAINER_ID
+                                docker rm $CONTAINER_ID
+                            fi
+                        else
+                            echo "Port $PORT is free."
+                        fi
+
                         echo "Checking for existing container..."
                         if [ "$(docker ps -aq -f name=$UNIQUE_CONTAINER_NAME)" ]; then
                             echo "Stopping and removing old container..."
@@ -38,11 +50,8 @@ pipeline {
                         else
                             echo "No old container found."
                         fi
-                    '''
-                    
-                    // Start a new container
-                    echo "Starting new container with unique name..."
-                    sh '''
+
+                        echo "Starting new container with unique name..."
                         docker run -d --name $UNIQUE_CONTAINER_NAME -p $PORT:80 $DOCKER_IMAGE
                     '''
                 }
@@ -53,7 +62,7 @@ pipeline {
     post {
         always {
             echo 'Cleaning up...'
-            // Cleanup dangling images or containers if needed
+            // Prune unused resources
             sh '''
                 echo "Pruning unused Docker resources..."
                 docker image prune -f || echo "No unused images to prune."
