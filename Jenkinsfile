@@ -52,7 +52,8 @@ pipeline {
                         fi
 
                         echo "Starting new container with unique name..."
-                        docker run -d --name $UNIQUE_CONTAINER_NAME -p $PORT:80 $DOCKER_IMAGE
+                        docker run -d --name ${containerName} -p 80:80 devops-webpage
+
                     '''
                 }
             }
