@@ -1,9 +1,10 @@
 pipeline {
     agent any
+
     stages {
         stage('Clone Repository') {
             steps {
-                git 'https://github.com/sheharyar777/devops-payment-page.git'
+                git branch: 'main', url: 'https://github.com/sheharyar777/devops-payment-page.git'
             }
         }
         stage('Build Docker Image') {
