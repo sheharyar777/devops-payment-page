@@ -1,7 +1,7 @@
 /* General Styles */
 body {
     font-family: Arial, sans-serif;
-    background-color: #ffccd5; /* Soft pink background */
+    background-color: #ffe5e9; /* Light pink background */
     margin: 0;
     padding: 0;
     display: flex;
@@ -15,7 +15,7 @@ body {
     text-align: center;
     width: 100%;
     max-width: 500px;
-    background-color: #ffe5e9; /* Light pink card */
+    background-color: #fff; /* White background for the card */
     border: 1px solid #ff7a91; /* Border matches the theme */
     border-radius: 8px;
     padding: 20px;
