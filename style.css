@@ -57,6 +57,16 @@ header h1 {
     font-size: 0.9em;
 }
 
+.payment-form input:focus {
+    border-color: #ff7a91;
+    outline: none;
+    box-shadow: 0 0 5px rgba(255, 122, 145, 0.5);
+}
+
+.payment-form input:invalid {
+    border-color: #ff506b;
+}
+
 .expiry-cvv {
     display: flex;
     justify-content: space-between;
@@ -79,4 +89,21 @@ button {
 
 button:hover {
     background-color: #ff506b; /* Slightly darker on hover */
+}
+
+button:focus {
+    outline: 2px solid #ff506b;
+    outline-offset: 2px;
+}
+
+/* Responsive Design */
+@media (max-width: 480px) {
+    .expiry-cvv {
+        flex-direction: column;
+    }
+
+    .expiry-cvv div {
+        width: 100%;
+        margin-bottom: 10px;
+    }
 }
